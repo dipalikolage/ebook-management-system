@@ -1,0 +1,37 @@
+<%- include("allCss.ejs") -%>
+<html>
+    <body>
+        
+<center>
+        <div class="col-md-3 mt-5 ">
+            <div class="card crd-ho">
+                <div class="card-body text-center">
+                    <img alt="" src="/img/<%= dt.image %>"
+                        style="width: 150px; height: 200px" class="img-thumblin">
+                    <p><%= dt.bname %></p>
+                    <p><%= dt.aname %></p>
+                    <p>
+    <i class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+        class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+        class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+        class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+        class="fa-solid fa-star" style="color: #FFD43B;"></i>
+</p>
+                    <p>Categorie:<%= dt.categorie %></p>
+                    <p>Price:<%= dt.price %></p>
+                    <div clas="row text-center">
+                        <a href="/adcrt/<%=dt._id %>" class="btn btn-success btn-sm ml-1" onclick="add()">Add
+                            to cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </center>
+<script>
+    function add(){
+        alert("added to cart successfully");
+    }
+</script>
+</body>
+</html>

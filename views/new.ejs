@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title><%- include('allCss.ejs') -%>
+  <style>.book-cover{width:150px;height:200px;object-fit:cover;border-radius:6px}.book-card{transition:transform .15s ease}.book-card:hover{transform:translateY(-3px)}</style>
+</head>
+<body class="bg-light">
+  <%- include('navbar.ejs') -%>
+  <main class="container-fluid py-4">
+    <a href="/" class="mb-3 d-inline-block">← Home</a>
+    <h2 class="text-center mb-4"><%= title %></h2>
+    <div class="row">
+      <% if (!books.length) { %><p class="col-12 text-center text-muted">No books found.</p><% } %>
+      <% books.forEach(book => { %><%- include('book-card.ejs', { book }) -%><% }) %>
+    </div>
+  </main>
+  <%- include('footer.ejs') -%>
+</body>
+</html>

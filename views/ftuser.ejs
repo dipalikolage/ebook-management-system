@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Cart</title><%- include("allCss.ejs") -%>
+<style>body{background:#f5f7f6}.cart-wrap{max-width:1000px;margin:60px auto}.book-row{background:#fff;border-radius:10px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}.book-img{width:70px;height:90px;object-fit:cover}.summary{background:#fff;border-radius:10px;padding:22px;box-shadow:0 2px 8px rgba(0,0,0,.08)}</style>
+</head>
+<body><%- include('navbar.ejs') -%>
+<div class="container cart-wrap">
+  <h2 class="mb-4">My Cart</h2>
+  <% if (!bdata.length) { %>
+    <div class="alert alert-info">Your cart is empty. <a href="/">Continue shopping</a></div>
+  <% } else { %>
+    <% bdata.forEach(function(item) { %>
+      <div class="book-row row align-items-center">
+        <div class="col-md-2 text-center"><img class="book-img" src="/img/<%= item.img %>" alt="<%= item.bn %>"></div>
+        <div class="col-md-5"><h5><%= item.bn %></h5><div class="text-muted">by <%= item.an %></div></div>
+        <div class="col-md-2"><strong><%= formatPrice(item.pr) %></strong></div>
+        <div class="col-md-3 text-md-right"><a href="/delete/<%= item._id %>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Remove this book from your cart?');">Remove</a></div>
+      </div>
+    <% }) %>
+    <div class="summary mt-4 d-flex justify-content-between align-items-center">
+      <div><div class="text-muted">Total</div><h3 class="mb-0"><%= formatPrice(total) %></h3></div>
+      <div><a href="/" class="btn btn-outline-secondary mr-2">Continue Shopping</a><a href="/checkout" class="btn btn-success btn-lg">Checkout</a></div>
+    </div>
+  <% } %>
+</div>
+</body></html>

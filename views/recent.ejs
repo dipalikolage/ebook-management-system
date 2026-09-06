@@ -1,0 +1,34 @@
+<%- include("allCss.ejs") -%>
+<a href="/"><i class="fa-solid fa-arrow-left mt-3 ml-3" ></i></a>
+<div class="container-fluid">
+    <h3 class="text-center">Recent Books</h3>
+    <div class="row">
+        <% recentdata.forEach(function (items){ %>
+        <div class="col-md-3">
+            <div class="card crd-ho">
+                <div class="card-body text-center">
+                    <img alt="" src="/img/<%= items.image %>"
+                        style="width: 150px; height: 200px" class="img-thumblin">
+                    <p><%= items.bname %></p>
+                    <p><%= items.aname %></p>
+                    <p>
+                        <i class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+                            class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+                            class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+                            class="fa-solid fa-star" style="color: #FFD43B;"></i><i
+                            class="fa-solid fa-star" style="color: #FFD43B;"></i>
+                    </p>
+                    <p>Categorie:<%= items.categorie %></p>
+                    <div clas="row text-center">
+                        <a href="" class="btn btn-danger btn-sm ml-2"><i
+                            class="fa-solid fa-cart-shopping"></i>Add Cart</a> <a href=""
+                            class="btn btn-success btn-sm ml-1">View Details</a> <a href=""
+                            class="btn btn-danger btn-sm ml-1"><i
+                            class="fa-solid fa-indian-rupee-sign"></i><%= items.price %></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</div>

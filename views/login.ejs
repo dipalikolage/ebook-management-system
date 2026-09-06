@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ebook Login </title>
+<%- include("allCss.ejs") -%>
+</head>
+<body style="background-color:#f0f1f2;">
+<%- include ("navbar.ejs") -%>
+<div class="container">
+<div class="row mt-2">
+<div class="col-md-4 offset-md-4">
+<div class="card"> 
+<div class="card-body">
+<h4 class="text-center">Login Page</h4>
+<form method="post" action="/log">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+  
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password" required>
+  </div>
+
+  <div class="form-group">
+  <input type="checkbox" onclick="myFunction()"> Show Password
+  </div>
+ 
+  <div class="text-center">
+  <button type="submit" class="btn btn-primary">Login</button><br/>
+   <a href="/register">Create Account</a>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function myFunction() {
+  var x = document.getElementById("exampleInputPassword1");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
+</body>
+</html>

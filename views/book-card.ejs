@@ -1,0 +1,22 @@
+<div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+  <div class="card h-100 shadow-sm book-card">
+    <div class="card-body text-center d-flex flex-column">
+      <img src="/img/<%= book.image %>" alt="<%= book.bname %>" class="book-cover mx-auto mb-3" loading="lazy">
+      <h5 class="mb-1"><%= book.bname %></h5>
+      <p class="text-muted mb-2">by <%= book.aname %></p>
+      <p class="mb-3 text-warning" aria-label="5 out of 5 stars">★★★★★</p>
+      <div class="mt-auto">
+        <span class="badge badge-secondary text-capitalize mb-2"><%= book.categorie %></span>
+        <div class="d-flex justify-content-center flex-wrap gap-1">
+          <% if (user) { %>
+            <a href="/adcrt/<%= book._id %>" class="btn btn-danger btn-sm">Add to Cart</a>
+          <% } else { %>
+            <a href="/login" class="btn btn-danger btn-sm">Login to Cart</a>
+          <% } %>
+          <a href="/view/<%= book._id %>" class="btn btn-success btn-sm">Details</a>
+          <span class="btn btn-outline-dark btn-sm"><%= formatPrice(book.price) %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

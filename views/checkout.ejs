@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout & Payment</title>
+<%- include('allCss.ejs') -%>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="bg-light">
+<%- include('navbar.ejs') -%>
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="mb-1">Checkout</h2>
+          <p class="text-muted mb-4">Enter delivery details, then pay securely with Razorpay.</p>
+
+          <div id="checkoutError" class="alert alert-danger d-none"></div>
+
+          <% if (!razorpayEnabled) { %>
+            <div class="alert alert-warning">
+              Online payment is not configured yet. Add <code>RAZORPAY_KEY_ID</code> and <code>RAZORPAY_KEY_SECRET</code> to your <code>.env</code> file.
+            </div>
+          <% } %>
+
+          <div class="mb-4 p-3 bg-light rounded">
+            <strong>Buyer</strong><br>
+            <%= buyer.name %><br>
+            <%= buyer.email %><br>
+            <%= mobile || 'Mobile not available' %>
+          </div>
+
+          <form id="checkoutForm">
+            <h5 class="mb-3">Delivery Address</h5>
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="addressLine">Address</label>
+                <textarea class="form-control" id="addressLine" name="addressLine" rows="3" placeholder="House/Flat No., Street, Area" required></textarea>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="city">City</label>
+                <input class="form-control" id="city" name="city" maxlength="80" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="state">State</label>
+                <input class="form-control" id="state" name="state" maxlength="80" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="pincode">Pincode</label>
+                <input class="form-control" id="pincode" name="pincode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit pincode" required>
+              </div>
+            </div>
+
+            <h5 class="mb-3 mt-4">Order Summary</h5>
+            <% items.forEach(function(item) { %>
+              <div class="d-flex justify-content-between border-bottom py-3">
+                <div><strong><%= item.bn %></strong><div class="text-muted">by <%= item.an %></div></div>
+                <strong><%= formatPrice(item.pr) %></strong>
+              </div>
+            <% }) %>
+
+            <div class="d-flex justify-content-between pt-4">
+              <h4>Total</h4>
+              <h4><%= formatPrice(total) %></h4>
+            </div>
+
+            <button class="btn btn-success btn-lg btn-block mt-3" id="payButton" type="submit" <%= !razorpayEnabled ? 'disabled' : '' %>>
+              Pay <%= formatPrice(total) %> with Razorpay
+            </button>
+          </form>
+
+          <a href="/crt" class="btn btn-outline-secondary btn-block mt-2">Back to Cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+const form = document.getElementById('checkoutForm');
+const payButton = document.getElementById('payButton');
+const errorBox = document.getElementById('checkoutError');
+
+function showError(message) {
+  errorBox.textContent = message || 'Something went wrong. Please try again.';
+  errorBox.classList.remove('d-none');
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  errorBox.classList.add('d-none');
+  payButton.disabled = true;
+  payButton.textContent = 'Preparing payment...';
+
+  const payload = Object.fromEntries(new FormData(form).entries());
+
+  try {
+    const createResponse = await fetch('/payment/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const paymentOrder = await createResponse.json();
+    if (!createResponse.ok) throw new Error(paymentOrder.error || 'Unable to start payment.');
+
+    const options = {
+      key: paymentOrder.keyId,
+      amount: paymentOrder.amount,
+      currency: paymentOrder.currency,
+      name: paymentOrder.name,
+      description: 'BookApp purchase',
+      order_id: paymentOrder.razorpayOrderId,
+      prefill: paymentOrder.prefill,
+      theme: { color: '#04AA6D' },
+      handler: async function (response) {
+        try {
+          const verifyResponse = await fetch('/payment/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ localOrderId: paymentOrder.localOrderId, ...response })
+          });
+          const result = await verifyResponse.json();
+          if (!verifyResponse.ok || !result.success) throw new Error(result.error || 'Payment verification failed.');
+          window.location.href = '/orders?payment=success';
+        } catch (error) {
+          showError(error.message);
+          payButton.disabled = false;
+          payButton.textContent = 'Try Payment Again';
+        }
+      },
+      modal: {
+        ondismiss: async function () {
+          await fetch('/payment/failure', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ localOrderId: paymentOrder.localOrderId, errorDescription: 'Payment window was closed.' })
+          }).catch(() => {});
+          window.location.href = '/orders?payment=failed';
+        }
+      }
+    };
+
+    const checkout = new Razorpay(options);
+    checkout.on('payment.failed', async function (response) {
+      await fetch('/payment/failure', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ localOrderId: paymentOrder.localOrderId, errorDescription: response.error?.description || 'Payment failed.' })
+      }).catch(() => {});
+      window.location.href = '/orders?payment=failed';
+    });
+    checkout.open();
+  } catch (error) {
+    showError(error.message);
+    payButton.disabled = false;
+    payButton.textContent = 'Pay with Razorpay';
+  }
+});
+</script>
+</body>
+</html>

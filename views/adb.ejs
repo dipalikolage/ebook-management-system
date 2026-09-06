@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add books</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e91e63;
+}
+
+.order-details {
+    margin-top: 20px;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 5px;
+}
+input{
+    height: 30px;
+    width: 400px;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Books here</h1>
+        <form method="post" action="/adb2">
+            <label for="bname">Enter Book Name *</label>
+            <input type="text" name="bname" required><br/><br/>
+
+            <label for="an">Enter Author Name *</label>
+            <input type="text" name="an" required><br/><br/>
+
+            <label for="pr">Enter price *</label>
+            <input type="text" name="pr" required><br/><br/>
+            
+            <label for="btype">
+            Select book categorie *
+            </label>
+            <select name="cat">
+                <option value="">--select--</option>
+                <option value="recent">Recent</option>
+                <option value="new">New</option>
+                <option value="old">Old</option>
+            </select>
+            <br/><br/>
+
+            <label for="img">Choose image file</label>
+            <input type="file" name="img"><br/><br/>
+            <button>Add Book</button>
+        </form>
+    </div>
+</body>
+</html>

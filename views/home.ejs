@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ebooks</title>
+  <%- include('allCss.ejs') -%>
+  <style>
+    .back-img { background:url('/img/bi.jpeg') center/cover no-repeat; min-height:50vh; border-radius:12px; }
+    .book-cover { width:150px; height:200px; object-fit:cover; border-radius:6px; }
+    .book-card { transition:transform .15s ease, box-shadow .15s ease; }
+    .book-card:hover { transform:translateY(-3px); }
+  </style>
+</head>
+<body class="bg-light">
+  <%- include('navbar.ejs') -%>
+  <main class="container-fluid py-3">
+    <div class="back-img mb-5"></div>
+    <% const sections = [{title:'Recent Books', data:rdata}, {title:'New Books', data:ndata}, {title:'Old Books', data:odata}]; %>
+    <% sections.forEach(section => { %>
+      <section class="mb-5">
+        <h3 class="text-center mb-4"><%= section.title %></h3>
+        <div class="row">
+          <% if (!section.data.length) { %><p class="col-12 text-center text-muted">No books available.</p><% } %>
+          <% section.data.forEach(book => { %><%- include('book-card.ejs', { book }) -%><% }) %>
+        </div>
+      </section>
+    <% }) %>
+  </main>
+  <%- include('footer.ejs') -%>
+</body>
+</html>
